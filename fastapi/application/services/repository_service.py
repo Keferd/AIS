@@ -46,11 +46,25 @@ def get_order_by_id(db: Session, id: int) -> Optional[Orders]:
     result = db.query(Orders).filter(Orders.id == id).first()
     return result
 
-#ДОБАВЛЕНИЕ
 
-@dbexception
-def add_order(db: Session) -> Optional[Orders]:
+# #ДОБАВЛЕНИЕ
+# def add_order(db: Session) -> Optional[Orders]:
+#     order = Orders()
+#     try:
+#         db.add(order)
+#         db.commit()
+#     except Exception as ex:
+#         print(traceback.format_exc())
+#         db.rollback()
+#         return None
+#     return order
+
+#ДОБАВЛЕНИЕ
+def create_order(db: Session) -> Optional[Orders]:
     order = Orders()
+    return add_order(db, order)
+
+def add_order(db: Session, order: Orders) -> Optional[Orders]:
     try:
         db.add(order)
         db.commit()
@@ -60,8 +74,13 @@ def add_order(db: Session) -> Optional[Orders]:
         return None
     return order
 
+#ИЗМЕНЕНИЕ
+def upgrade_order_by_id(db: Session,id, date) -> bool:
+    order = get_order_by_id(db,id)
+    order.date = date
+    return add_order(db, order)
+
 #УДАЛЕНИЕ
-@dbexception
 def delete_order_by_id(db: Session, id: int) -> bool:
     order = get_order_by_id(db, id)
     try:
@@ -104,7 +123,7 @@ def add_dish(db: Session, dish: Dishes) -> Optional[Dishes]:
 def upgrade_dish_by_id(db: Session,id, name) -> bool:
     dish = get_dish_by_id(db,id)
     dish.name = name
-    return add_ingredient(db, dish)
+    return add_dish(db, dish)
 
 #УДАЛЕНИЕ
 def delete_dish_by_id(db: Session, id: int) -> bool:
@@ -194,7 +213,7 @@ def add_storage(db: Session, storage: Storage) -> bool:
 def uprade_storage_amount_by_id(db: Session, id,count ) -> bool:
     storage = get_storage_by_id(db,id)
     storage.count=count
-    return add_ingredient(db, storage)
+    return add_storage(db, storage)
 
 #УДАЛЕНИЕ
 def delete_storage_by_id(db: Session, id: int) -> bool:
@@ -216,7 +235,7 @@ def get_dish_ingredient_by_dish_id(db: Session, id_dish: int) -> Iterable[Dishes
     return result
 
 #ПОЛУЧЕНИЕ ПО ID ИНГРЕДИЕНТА
-def get_dish_ingredient_by_ingredient_id(db: Session, id_ingredient: int) -> Optional[DishesIngredients]:
+def get_dish_ingredient_by_ingredient_id(db: Session, id_ingredient: int) -> Iterable[DishesIngredients]:
     result = db.query(DishesIngredients).filter(DishesIngredients.id_ingredient == id_ingredient).all()
     return result
 
@@ -239,13 +258,13 @@ def add_dish_ingredient(db: Session, dish_ingredient: DishesIngredients) -> bool
 def uprade_dish_ingredient_amount_by_dish_id(db: Session, id,count ) -> bool:
     dish_ingredient = get_dish_ingredient_by_dish_id(db,id)
     dish_ingredient.count=count
-    return add_ingredient(db, dish_ingredient)
+    return add_dish_ingredient(db, dish_ingredient)
 
 #ИЗМЕНЕНИЕ ПО ID ИНГРЕДИЕНТА
 def uprade_dish_ingredient_amount_by_ingredient_id(db: Session, id,count ) -> bool:
     dish_ingredient = get_dish_ingredient_by_ingredient_id(db,id)
     dish_ingredient.count=count
-    return add_ingredient(db, dish_ingredient)
+    return add_dish_ingredient(db, dish_ingredient)
 
 #УДАЛЕНИЕ ПО ID БЛЮДА
 def delete_dish_ingredient_by_dish_id(db: Session, id: int) -> bool:
@@ -275,24 +294,14 @@ def delete_dish_ingredient_by_ingredient_id(db: Session, id: int) -> bool:
 """ -------------------------- OrdersDishes -------------------------- """
 
 #ПОЛУЧЕНИЕ ПО ID ЗАКАЗА
-def get_order_dish_by_order_id(db: Session, dish_id: int) -> Optional[OrdersDishes]:
-    result = db.query(OrdersDishes).filter(OrdersDishes.dish_id == dish_id).all()
+def get_order_dish_by_order_id(db: Session, id_order: int) -> Iterable[OrdersDishes]:
+    result = db.query(OrdersDishes).filter(OrdersDishes.id_order == id_order).all()
     return result
-
-#ПОЛУЧЕНИЕ ВСЕХ ПО ID ЗАКАЗА
-# def get_all_order_dish_by_order_id(db: Session, dish_id: int) -> Optional[OrdersDishes]:
-#     result = db.query(OrdersDishes).filter(OrdersDishes.dish_id == dish_id).all()
-#     return result
 
 #ПОЛУЧЕНИЕ ПО ID БЛЮДА
-def get_order_dish_by_dish_id(db: Session, order_id: int) -> Optional[OrdersDishes]:
-    result = db.query(OrdersDishes).filter(OrdersDishes.order_id == order_id).all()
+def get_order_dish_by_dish_id(db: Session, id_dish: int) -> Iterable[OrdersDishes]:
+    result = db.query(OrdersDishes).filter(OrdersDishes.id_dish == id_dish).all()
     return result
-
-#ПОЛУЧЕНИЕ ВСЕХ ПО ID БЛЮДА
-# def get_all_order_dish_by_dish_id(db: Session, order_id: int) -> Optional[OrdersDishes]:
-#     result = db.query(OrdersDishes).filter(OrdersDishes.order_id == order_id).all()
-#     return result
 
 #СОЗДАНИЕ
 def create_order_dish(db: Session, id_order, id_dish, amount) -> bool:
@@ -313,19 +322,20 @@ def add_order_dish(db: Session, order_dish: OrdersDishes) -> bool:
 def uprade_order_dish_amount_by_order_id(db: Session, id,count ) -> bool:
     order_dish = get_order_dish_by_order_id(db,id)
     order_dish.count=count
-    return add_ingredient(db, order_dish)
+    return add_order_dish(db, order_dish)
 
 #ИЗМЕНЕНИЕ ПО ID БЛЮДА
 def uprade_order_dish_amount_by_dish_id(db: Session, id,count ) -> bool:
     order_dish = get_order_dish_by_dish_id(db,id)
     order_dish.count=count
-    return add_ingredient(db, order_dish)
+    return add_order_dish(db, order_dish)
 
 #УДАЛЕНИЕ ПО ID ЗАКАЗА
 def delete_order_dish_by_order_id(db: Session, id: int) -> bool:
     order_dish = get_order_dish_by_order_id(db, id)
     try:
-        db.delete(order_dish)
+        for or_di in order_dish:
+            db.delete(or_di)
         db.commit()
     except Exception as ex:
         print(traceback.format_exc())
@@ -347,42 +357,42 @@ def delete_order_dish_by_dish_id(db: Session, id: int) -> bool:
 
 
 """ -------------------------- Test -------------------------- """
-#ПОЛУЧЕНИЕ ПО ID
-def get_test_by_id(db: Session, id: int) -> Optional[DishesIngredients]:
-    result = db.query(Test).filter(Test.id == id).first()
-    return result
+# #ПОЛУЧЕНИЕ ПО ID
+# def get_test_by_id(db: Session, id: int) -> Optional[DishesIngredients]:
+#     result = db.query(Test).filter(Test.id == id).first()
+#     return result
 
-#СОЗДАНИЕ
-def create_test(db: Session, name) -> bool:
-    test = Test(name=name)
-    return add_test(db, test)
+# #СОЗДАНИЕ
+# def create_test(db: Session, name) -> bool:
+#     test = Test(name=name)
+#     return add_test(db, test)
 
-def add_test(db: Session, test: Test) -> bool:
-    try:
-        db.add(test)
-        db.commit()
-    except Exception as ex:
-        print(traceback.format_exc())
-        db.rollback()
-        return False
-    return True
+# def add_test(db: Session, test: Test) -> bool:
+#     try:
+#         db.add(test)
+#         db.commit()
+#     except Exception as ex:
+#         print(traceback.format_exc())
+#         db.rollback()
+#         return False
+#     return True
 
-#ИЗМЕНЕНИЕ ПО ID
-def uprade_test_by_id(db: Session, id,name ) -> bool:
-    test = get_test_by_id(db,id)
-    test.name=name
-    return add_ingredient(db, test)
+# #ИЗМЕНЕНИЕ ПО ID
+# def uprade_test_by_id(db: Session, id,name ) -> bool:
+#     test = get_test_by_id(db,id)
+#     test.name=name
+#     return add_ingredient(db, test)
 
-def delete_test_by_id(db: Session, id: int) -> bool:
-    test = get_test_by_id(db, id)
-    try:
-        db.delete(test)
-        db.commit()
-    except Exception as ex:
-        print(traceback.format_exc())
-        db.rollback()
-        return False
-    return True
+# def delete_test_by_id(db: Session, id: int) -> bool:
+#     test = get_test_by_id(db, id)
+#     try:
+#         db.delete(test)
+#         db.commit()
+#     except Exception as ex:
+#         print(traceback.format_exc())
+#         db.rollback()
+#         return False
+#     return True
 
 # def get_weather_by_city_id(db: Session, city_id: int) -> Optional[Weather]:
 #     """ Выборка одной записи о погоде по идентификатору (PrimaryKey) населённого пункта """

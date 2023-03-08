@@ -5,6 +5,7 @@ from application.models.dto.dishes_dto import DishesDTO
 from application.models.dto.ingredients_dto import IngredientsDTO
 from application.models.dto.orders_dishes_dto import OrdersDishesDTO
 from application.models.dto.orders_dto import OrdersDTO
+from application.models.dto.neworders_dto import NewOrdersDTO
 from application.models.dto.storage_dto import StorageDTO
 from application.services.weather_service import WeatherService
 
@@ -28,57 +29,6 @@ async def root():
     """ Переадресация на страницу Swagger """
     return RedirectResponse(url='/docs', status_code=307)
 
-""" -------------------------- Order -------------------------- """
-
-# @router.get('/order', response_model=OrdersDTO)
-# async def get_order_by_id(id: int):
-#     """ Получение order по id """
-#     with SessionLocal() as session:
-#         response = repository_service.get_order_by_id(session, id)
-#     if response is None:
-#         return Response(status_code=204)
-#     return OrdersDTO(time=response.date)
-#
-# @router.delete('/ingredient', status_code=200)
-# async def del_ingredient_by_id(id: int):
-#     """ Удаление ingredient по id """
-#     with SessionLocal() as session:
-#         if repository_service.delete_ingredient_by_id(session, id):
-#             return Response(status_code=200)
-#         else:
-#             raise HTTPException(
-#                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-#                 detail="Can't delete Ingredient data",
-#             )
-#
-# @router.post('/ingredient', status_code=201)
-# async def post_ingredient(ingredient: IngredientsDTO):
-#     """ Добавление ingredient """
-#     with SessionLocal() as session:
-#         if repository_service.create_ingredient(session,
-#                                              name = ingredient.name,
-#                                              count = ingredient.count):
-#             return Response(status_code=201)
-#         else:
-#             raise HTTPException(
-#                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-#                 detail="Can't add new Ingredient data",
-#             )
-#
-# @router.put('/ingredient', status_code=202)
-# async def put_ingredient(id: int ,ingredient: IngredientsDTO):
-#     """ Обновить Ingredients """
-#     with SessionLocal() as session:
-#         if repository_service.uprade_ingredient_by_id(session,
-#                                                      id = id,
-#                                                      name = ingredient.name,
-#                                                      count = ingredient.count):
-#             return Response(status_code=202)
-#         else:
-#             raise HTTPException(
-#                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-#                 detail="Can't update Weather data",
-#             )
 
 """ -------------------------- Orders -------------------------- """
 
@@ -93,22 +43,22 @@ async def get_order_by_id(id: int):
             dishes[i.id_dish] = i.amount
     if response is None:
         return Response(status_code=204)
-    return OrdersDTO(time=response.date, dishes=dishes)
+    return OrdersDTO(date=response.date, dishes=dishes)
 
 @router.put('/order', status_code=202)
-async def put_order(id: int ,order: OrdersDTO):
+async def put_order(id: int ,order: NewOrdersDTO):
     """ Обновить Order """
     with SessionLocal() as session:
         neworder = repository_service.delete_order_dish_by_order_id(session, id)
         if neworder:
             dishes = order.dishes
             for key in dishes:
-                repository_service.create_dish_ingredient(session, id, key, dishes[key])
+                repository_service.create_order_dish(session, id, key, dishes[key])
             return Response(status_code=202)
         else:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Can't update Weather data",
+                detail="Can't update Order data",
             )
 
 @router.delete('/order', status_code=200)
@@ -120,14 +70,14 @@ async def del_order_by_id(id: int):
         else:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Can't delete Ingredient data",
+                detail="Can't delete Order data",
             )
 
 @router.post('/order', status_code=201)
-async def post_dish(order: OrdersDTO):
+async def post_order(order: NewOrdersDTO):
     """ Добавление order """
     with SessionLocal() as session:
-        neworder = repository_service.add_order(session)
+        neworder = repository_service.create_order(session)
         if neworder is not None:
             dishes = order.dishes
             for key in dishes:
@@ -136,7 +86,7 @@ async def post_dish(order: OrdersDTO):
         else:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Can't add new Ingredient data",
+                detail="Can't add new Order data",
             )
 
 """ -------------------------- Dishes -------------------------- """

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Boolean, Integer, Numeric, String, Text, DateTime
+from sqlalchemy import Column, ForeignKey, Boolean, Integer, Numeric, String, Text, DateTime, Date
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
@@ -37,10 +37,9 @@ class Dishes(Base):
 class Storage(Base):
     __tablename__ = "storage"
     id = Column(Integer, nullable=True, primary_key=True)
-    ingredient_id = Column(Integer, ForeignKey('ingredients.id'), nullable=False)
-    batch_number = Column(Integer, nullable=False, unique=False)
+    id_ingredient = Column(Integer, ForeignKey('ingredients.id'), nullable=False)
     count = Column(Integer, nullable=False, unique=False)
-    expiry_date = Column(DateTime())
+    expiry_date = Column(Date())
     #...
 class DishesIngredients(Base):
     __tablename__ = 'dishes_ingredients'
@@ -61,6 +60,6 @@ class OrdersDishes(Base):
     amount = Column(Integer, nullable=False, unique=False)
 
 class Test(Base):
-    __tablename__ = 'test'
+    __tablename__ = 'TEST'
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(100), nullable=False)

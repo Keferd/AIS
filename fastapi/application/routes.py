@@ -7,6 +7,7 @@ from application.models.dto.orders_dishes_dto import OrdersDishesDTO
 from application.models.dto.orders_dto import OrdersDTO
 from application.models.dto.neworders_dto import NewOrdersDTO
 from application.models.dto.storage_dto import StorageDTO
+from application.models.dto.dishes_ingredients_dto import DishesIngredientsDTO
 from application.services.weather_service import WeatherService
 
 
@@ -205,53 +206,51 @@ async def put_ingredient(id: int ,ingredient: IngredientsDTO):
 
 @router.get('/storage', response_model=StorageDTO)
 async def get_storage_by_id(id: int):
-    """ Получение ingredient по id """
+    """ Получение storage по id """
     with SessionLocal() as session:
         response = repository_service.get_storage_by_id(session, id)
     if response is None:
         return Response(status_code=204)
-    return StorageDTO(ingredient_id=response.ingredient_id,
-                      batch_number=response.batch_number,
+    return StorageDTO(id_ingredient=response.id_ingredient,
                       count=response.count,
                       expiry_date=response.expiry_date)
 
 @router.delete('/storage', status_code=200)
 async def del_storage_by_id(id: int):
-    """ Удаление ingredient по id """
+    """ Удаление storage по id """
     with SessionLocal() as session:
         if repository_service.delete_storage_by_id(session, id):
             return Response(status_code=200)
         else:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Can't delete Ingredient data",
+                detail="Can't delete Storage data",
             )
 
 @router.post('/storage', status_code=201)
-async def post_storage(ingredient: StorageDTO):
-    """ Добавление ingredient """
+async def post_storage(storage: StorageDTO):
+    """ Добавление storage """
     with SessionLocal() as session:
-        if repository_service.create_storage(session, ingredient_id=ingredient.ingredient_id,
-                                                 batch_number=ingredient.batch_number,
-                                                 count=ingredient.count,
-                                                 date=ingredient.expiry_date):
+        if repository_service.create_storage(session, count=storage.count,
+                                                 expiry_date=storage.expiry_date,
+                                                 id_ingredient=storage.id_ingredient):
             return Response(status_code=201)
         else:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Can't add new Ingredient data",
+                detail="Can't add new Storage data",
             )
 
 @router.put('/storage', status_code=202)
-async def put_storage_amount(id: int,ingredient: StorageDTO):
-    """ Обновить Ingredients """
+async def put_storage_amount(id: int,storage: StorageDTO):
+    """ Обновить Storage """
     with SessionLocal() as session:
-        if repository_service.uprade_storage_amount_by_id(session,id=id,count=ingredient.count):
+        if repository_service.uprade_storage_by_id(session,id=id,count=storage.count,expiry_date=storage.expiry_date,id_ingredient=storage.id_ingredient):
             return Response(status_code=202)
         else:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Can't update Weather data",
+                detail="Can't update Storage data",
             )
 
 """ -------------------------- ORDERS_DISHES -------------------------- """
@@ -261,7 +260,7 @@ async def get_all_or_di_by_or(id: int):
     """ Получение всех записей OrderDishes по ID Order """
     or_di_data: List[OrdersDishesDTO] = []
     with SessionLocal() as session:
-        result = repository_service.get_all_order_dish_by_order_id(session, id)
+        result = repository_service.get_order_dish_by_order_id(session, id)
         for w in result:
             or_di_data.append(OrdersDishesDTO(id_order=w.id_order,
                                           id_dish=w.id_dish,
@@ -273,12 +272,38 @@ async def get_all_or_di_by_di(id: int):
     """ Получение всех записей OrderDishes по ID Dishes """
     or_di_data: List[OrdersDishesDTO] = []
     with SessionLocal() as session:
-        result = repository_service.get_all_order_dish_by_dishes_id(session, id)
+        result = repository_service.get_order_dish_by_dish_id(session, id)
         for w in result:
             or_di_data.append(OrdersDishesDTO(id_order=w.id_order,
                                           id_dish=w.id_dish,
                                           amount=w.amount))
     return or_di_data
+
+""" -------------------------- DISHES_INGREDIENTS -------------------------- """
+
+# @router.get('/di_in_by_di/{id}', response_model=List[DishesIngredientsDTO])
+# async def get_all_di_in_by_di(id: int):
+#     """ Получение всех записей DishesIngredients по ID Dishes """
+#     di_in_data: List[DishesIngredientsDTO] = []
+#     with SessionLocal() as session:
+#         result = repository_service.get_dish_ingredient_by_dish_id(session, id)
+#         for w in result:
+#             di_in_data.append(DishesIngredientsDTO(id_dish=w.id_dish,
+#                                                     id_ingredient=w.id_ingredient,
+#                                                     amount=w.amount))
+#     return di_in_data
+
+# @router.get('/di_in_by_in/{id}', response_model=List[DishesIngredientsDTO])
+# async def get_all_di_in_by_in(id: int):
+#     """ Получение всех записей DishesIngredients по ID Ingredients """
+#     di_in_data: List[DishesIngredientsDTO] = []
+#     with SessionLocal() as session:
+#         result = repository_service.get_dish_ingredient_by_ingredient_id(session, id)
+#         for w in result:
+#             di_in_data.append(DishesIngredientsDTO(id_dish=w.id_dish,
+#                                                     id_ingredient=w.id_ingredient,
+#                                                     amount=w.amount))
+#     return di_in_data
 
 """ -------------------------- ПРИМЕРЫ -------------------------- """
 

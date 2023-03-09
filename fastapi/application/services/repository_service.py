@@ -190,13 +190,13 @@ def get_storage_by_id(db: Session, id: int) -> Optional[Storage]:
     return result
 
 #ПОЛУЧЕНИЕ ПО ID ИНГРЕДИЕНТА
-def get_storage_by_ingredient_id(db: Session, id: int) -> Optional[Storage]:
-    result = db.query(Storage).filter(Storage.id_ingredient == id).first()
+def get_storage_by_ingredient_id(db: Session, id: int) -> Iterable[Storage]:
+    result = db.query(Storage).filter(Storage.id_ingredient == id).all()
     return result
 
 #СОЗДАНИЕ
-def create_storage(db: Session, batch_number, count, date, id_ingredient) -> bool:
-    storage = Storage(batch_number=batch_number, count=count, expiry_date=date, id_ingredient=id_ingredient)
+def create_storage(db: Session, count, expiry_date, id_ingredient) -> bool:
+    storage = Storage(count=count, expiry_date=expiry_date, id_ingredient=id_ingredient)
     return add_storage(db, storage)
 
 def add_storage(db: Session, storage: Storage) -> bool:
@@ -210,9 +210,11 @@ def add_storage(db: Session, storage: Storage) -> bool:
     return True
 
 #ИЗМЕНЕНИЕ
-def uprade_storage_amount_by_id(db: Session, id,count ) -> bool:
+def uprade_storage_by_id(db: Session, id, count, expiry_date, id_ingredient) -> bool:
     storage = get_storage_by_id(db,id)
     storage.count=count
+    storage.expiry_date=expiry_date
+    storage.id_ingredient=id_ingredient
     return add_storage(db, storage)
 
 #УДАЛЕНИЕ

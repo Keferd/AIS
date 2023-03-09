@@ -3,9 +3,9 @@ from typing import (
     Deque, Dict, List, Optional, Sequence, Set, Tuple, Union
 )
 
-from datetime import datetime
+from datetime import date
 
 class StorageDTO(BaseModel):
-    batch_number: int
     count: int
-    expiry_date: datetime
+    expiry_date: date
+    id_ingredient: int

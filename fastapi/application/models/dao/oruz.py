@@ -38,7 +38,6 @@ class Storage(Base):
     __tablename__ = "storage"
     id = Column(Integer, nullable=True, primary_key=True)
     ingredient_id = Column(Integer, ForeignKey('ingredients.id'), nullable=False)
-    batch_number = Column(Integer, nullable=False, unique=False)
     count = Column(Integer, nullable=False, unique=False)
     expiry_date = Column(DateTime())
     #...

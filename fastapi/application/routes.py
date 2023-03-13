@@ -261,7 +261,6 @@ async def get_storage_by_id(id: int):
     if response is None:
         return Response(status_code=204)
     return StorageDTO(ingredient_id=response.ingredient_id,
-                      batch_number=response.batch_number,
                       count=response.count,
                       expiry_date=response.expiry_date)
 
@@ -282,7 +281,6 @@ async def post_storage(ingredient: StorageDTO):
     """ Добавление ingredient """
     with SessionLocal() as session:
         if repository_service.create_storage(session, ingredient_id=ingredient.ingredient_id,
-                                                 batch_number=ingredient.batch_number,
                                                  count=ingredient.count,
                                                  date=ingredient.expiry_date):
             return Response(status_code=201)

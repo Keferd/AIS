@@ -6,6 +6,6 @@ from typing import (
 from datetime import datetime
 
 class StorageDTO(BaseModel):
-    batch_number: int
     count: int
     expiry_date: datetime
+    ingredient_id: int

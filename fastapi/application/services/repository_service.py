@@ -151,6 +151,11 @@ def uprade_ingredient_by_id(db: Session, id,name,count ) -> bool:
     ingredient.count=count
     return add_ingredient(db, ingredient)
 
+def increace_ingredient_count_by_id(db: Session, id,count ) -> bool:
+    ingredient = get_ingredient_by_id(db,id)
+    ingredient.count=count+ingredient.count
+    return add_ingredient(db, ingredient)
+
 #УДАЛЕНИЕ
 def delete_ingredient_by_id(db: Session, id: int) -> bool:
     ingredient = get_ingredient_by_id(db, id)
@@ -176,8 +181,8 @@ def get_storage_by_ingredient_id(db: Session, id: int) -> Optional[Storage]:
     return result
 
 #СОЗДАНИЕ
-def create_storage(db: Session, count, date, id_ingredient) -> bool:
-    storage = Storage(count=count, expiry_date=date, id_ingredient=id_ingredient)
+def create_storage(db: Session, count, date, ingredient_id) -> bool:
+    storage = Storage(count=count, expiry_date=date, ingredient_id=ingredient_id)
     return add_storage(db, storage)
 
 def add_storage(db: Session, storage: Storage) -> bool:

@@ -42,15 +42,11 @@ def dbexception(db_func):
 """ -------------------------- Orders -------------------------- """
 
 #ПОЛУЧЕНИЕ
-def get_order_by_id(db: Session, id: int) -> Optional[Orders]:
-    result = db.query(Orders).filter(Orders.id == id).first()
-    return result
-
-#ДОБАВЛЕНИЕ
-
-@dbexception
-def add_order(db: Session) -> Optional[Orders]:
+def create_order(db: Session) -> Optional[Orders]:
     order = Orders()
+    return add_order(db, order)
+
+def add_order(db: Session, order: Orders) -> Optional[Orders]:
     try:
         db.add(order)
         db.commit()
@@ -59,6 +55,7 @@ def add_order(db: Session) -> Optional[Orders]:
         db.rollback()
         return None
     return order
+
 
 #УДАЛЕНИЕ
 @dbexception

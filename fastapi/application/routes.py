@@ -143,6 +143,9 @@ async def post_dish(dish: DishesDTO):
             ingredients = dish.ingredients
             for key in ingredients:
                 repository_service.create_dish_ingredient(session, newdish.id, key, ingredients[key])
+                ingredients_for_dishes = repository_service.get_dish_ingredient_by_dish_id(session, key)
+                for ing in ingredients_for_dishes:
+                    repository_service.increace_ingredient_count_by_id(session, ing.id_ingredient,-dishes[key] * (ing.amount))
             return Response(status_code=201)
         else:
             raise HTTPException(

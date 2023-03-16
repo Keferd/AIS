@@ -124,7 +124,7 @@ async def del_order_by_id(id: int):
             )
 
 @router.post('/order', status_code=201)
-async def post_dish(order: OrdersDTO):
+async def post_order(order: OrdersDTO):
     """ Добавление order """
     with SessionLocal() as session:
         neworder = repository_service.add_order(session)
@@ -132,6 +132,9 @@ async def post_dish(order: OrdersDTO):
             dishes = order.dishes
             for key in dishes:
                 repository_service.create_order_dish(session, neworder.id, key, dishes[key])
+                ingredients_for_dishes=repository_service.get_dish_ingredient_by_dish_id(session,key)
+                for ing in ingredients_for_dishes:
+                    repository_service.increace_ingredient_count_by_id(session, ing.id_ingredient, -dishes[key]*(ing.amount))
             return Response(status_code=201)
         else:
             raise HTTPException(

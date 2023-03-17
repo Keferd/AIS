@@ -286,7 +286,6 @@ async def post_storage(ingredient: StorageDTO):
         if repository_service.create_storage(session, ingredient_id=ingredient.ingredient_id,
                                                  count=ingredient.count,
                                                  date=ingredient.expiry_date):
-            repository_service.increace_ingredient_count_by_id(session,ingredient.ingredient_id,ingredient.count)
             return Response(status_code=201)
         else:
             raise HTTPException(

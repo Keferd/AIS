@@ -228,17 +228,18 @@ async def del_storage_by_id(id: int):
             )
 
 @router.post('/storage', status_code=201)
-async def post_storage(storage: StorageDTO):
-    """ Добавление storage """
+async def post_storage(ingredient: StorageDTO):
+    """ Добавление ingredient """
     with SessionLocal() as session:
-        if repository_service.create_storage(session, count=storage.count,
-                                                 expiry_date=storage.expiry_date,
-                                                 id_ingredient=storage.id_ingredient):
+        if repository_service.create_storage(session,count=ingredient.count,
+                                                 ingredient_id=ingredient.ingredient_id,
+                                                 expiry_date=ingredient.expiry_date):
+            #repository_service.increace_ingredient_count_by_id(session,ingredient.ingredient_id,ingredient.count)
             return Response(status_code=201)
         else:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Can't add new Storage data",
+                detail="Can't add new Ingredient data",
             )
 
 @router.put('/storage', status_code=202)

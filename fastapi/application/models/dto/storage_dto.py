@@ -8,4 +8,4 @@ from datetime import date
 class StorageDTO(BaseModel):
     count: int
     expiry_date: date
-    id_ingredient: int
+    ingredient_id: int

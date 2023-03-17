@@ -142,7 +142,6 @@ def delete_dish_by_id(db: Session, id: int) -> bool:
 def get_ingredient_by_id(db: Session, id: int) -> Optional[Ingredients]:
     result = db.query(Ingredients).filter_by(id=id).first()
     return result
-
 #ПОЛУЧЕНИ ПО ИМЕНИ
 def get_ingredient_by_name(db: Session, name: String) -> Optional[Ingredients]:
     result = db.query(Ingredients).filter_by(name=name).first()
@@ -195,8 +194,8 @@ def get_storage_by_ingredient_id(db: Session, id: int) -> Iterable[Storage]:
     return result
 
 #СОЗДАНИЕ
-def create_storage(db: Session, count, expiry_date, id_ingredient) -> bool:
-    storage = Storage(count=count, expiry_date=expiry_date, id_ingredient=id_ingredient)
+def create_storage(db: Session, count, date, ingredient_id) -> bool:
+    storage = Storage(count=count, expiry_date=date, ingredient_id=ingredient_id)
     return add_storage(db, storage)
 
 def add_storage(db: Session, storage: Storage) -> bool:

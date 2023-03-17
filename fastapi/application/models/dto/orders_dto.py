@@ -7,5 +7,4 @@ from datetime import datetime
 
 
 class OrdersDTO(BaseModel):
-    date: datetime
     dishes: Dict[int, int] = None

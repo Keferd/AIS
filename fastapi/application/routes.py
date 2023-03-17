@@ -128,13 +128,13 @@ async def post_order(order: OrdersDTO):
     """ Добавление order """
     with SessionLocal() as session:
         neworder = repository_service.add_order(session)
-        if neworder is not None:
+        if order.dishes!={}:
             dishes = order.dishes
             for key in dishes:
-                repository_service.create_order_dish(session, neworder.id, key, dishes[key])
+                repository_service.create_order_dish(db=session,order_id=neworder.id,dish_id=key,amount=dishes[key])
                 ingredients_for_dishes=repository_service.get_dish_ingredient_by_dish_id(session,key)
                 for ing in ingredients_for_dishes:
-                    repository_service.increace_ingredient_count_by_id(session, ing.id_ingredient, -dishes[key]*(ing.amount))
+                     repository_service.increace_ingredient_count_by_id(session, ing.ingredient_id, -dishes[key]*(ing.amount))
             return Response(status_code=201)
         else:
             raise HTTPException(
@@ -283,9 +283,10 @@ async def del_storage_by_id(id: int):
 async def post_storage(ingredient: StorageDTO):
     """ Добавление ingredient """
     with SessionLocal() as session:
-        if repository_service.create_storage(session, ingredient_id=ingredient.ingredient_id,
-                                                 count=ingredient.count,
-                                                 date=ingredient.expiry_date):
+        if repository_service.create_storage(session, count=ingredient.count,
+                                                 date=ingredient.expiry_date,
+                                                 ingredient_id=ingredient.ingredient_id):
+            repository_service.increace_ingredient_count_by_id(session, ingredient.ingredient_id, ingredient.count)
             return Response(status_code=201)
         else:
             raise HTTPException(

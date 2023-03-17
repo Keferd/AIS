@@ -6,6 +6,6 @@ from typing import (
 from datetime import datetime
 
 class DishesIngredientsDTO(BaseModel):
-    id_dish = int
-    id_ingredient = int
+    dish_id = int
+    ingredient_id = int
     amount: int

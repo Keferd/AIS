@@ -46,15 +46,18 @@ def create_order(db: Session) -> Optional[Orders]:
     order = Orders()
     return add_order(db, order)
 
-def add_order(db: Session, order: Orders) -> Optional[Orders]:
-    try:
-        db.add(order)
-        db.commit()
-    except Exception as ex:
-        print(traceback.format_exc())
-        db.rollback()
-        return None
-    return order
+def add_order(db: Session) -> None:
+    order1 = Orders()
+    db.add(order1)
+    db.commit()
+    return order1
+    # try:
+    #     db.add(order)
+    #     db.commit()
+    # except Exception as ex:
+    #     print(traceback.format_exc())
+    #     db.rollback()
+    #     return None
 
 
 #УДАЛЕНИЕ
@@ -120,7 +123,10 @@ def delete_dish_by_id(db: Session, id: int) -> bool:
 def get_ingredient_by_id(db: Session, id: int) -> Optional[Ingredients]:
     result = db.query(Ingredients).filter_by(id=id).first()
     return result
-
+def increace_ingredient_count_by_id(db: Session, id,count ) -> bool:
+    ingredient = get_ingredient_by_id(db,id)
+    ingredient.count = ingredient.count + count
+    return add_ingredient(db, ingredient)
 #ПОЛУЧЕНИ ПО ИМЕНИ
 def get_ingredient_by_name(db: Session, name: String) -> Optional[Ingredients]:
     result = db.query(Ingredients).filter_by(name=name).first()
@@ -169,12 +175,12 @@ def get_storage_by_id(db: Session, id: int) -> Optional[Storage]:
 
 #ПОЛУЧЕНИЕ ПО ID ИНГРЕДИЕНТА
 def get_storage_by_ingredient_id(db: Session, id: int) -> Optional[Storage]:
-    result = db.query(Storage).filter(Storage.id_ingredient == id).first()
+    result = db.query(Storage).filter(Storage.ingredient_id == id).first()
     return result
 
 #СОЗДАНИЕ
-def create_storage(db: Session, count, date, id_ingredient) -> bool:
-    storage = Storage(count=count, expiry_date=date, id_ingredient=id_ingredient)
+def create_storage(db: Session, count, date, ingredient_id) -> bool:
+    storage = Storage(count=count, expiry_date=date, ingredient_id=ingredient_id)
     return add_storage(db, storage)
 
 def add_storage(db: Session, storage: Storage) -> bool:
@@ -208,18 +214,18 @@ def delete_storage_by_id(db: Session, id: int) -> bool:
 
 """ -------------------------- DishesIngredients -------------------------- """
 #ПОЛУЧЕНИЕ ПО ID БЛЮДА
-def get_dish_ingredient_by_dish_id(db: Session, id_dish: int) -> Iterable[DishesIngredients]:
-    result = db.query(DishesIngredients).filter(DishesIngredients.id_dish == id_dish).all()
+def get_dish_ingredient_by_dish_id(db: Session, dish_id: int) -> Iterable[DishesIngredients]:
+    result = db.query(DishesIngredients).filter(DishesIngredients.dish_id == dish_id).all()
     return result
 
 #ПОЛУЧЕНИЕ ПО ID ИНГРЕДИЕНТА
-def get_dish_ingredient_by_ingredient_id(db: Session, id_ingredient: int) -> Optional[DishesIngredients]:
-    result = db.query(DishesIngredients).filter(DishesIngredients.id_ingredient == id_ingredient).all()
+def get_dish_ingredient_by_ingredient_id(db: Session, ingredient_id: int) -> Optional[DishesIngredients]:
+    result = db.query(DishesIngredients).filter(DishesIngredients.ingredient_id == ingredient_id).all()
     return result
 
 #СОЗДАНИЕ
-def create_dish_ingredient(db: Session, id_dish, id_ingredient, amount) -> bool:
-    dish_ingredient = DishesIngredients(id_dish=id_dish, id_ingredient=id_ingredient, amount=amount)
+def create_dish_ingredient(db: Session, dish_id, ingredient_id, amount) -> bool:
+    dish_ingredient = DishesIngredients(dish_id=dish_id, ingredient_id=ingredient_id, amount=amount)
     return add_dish_ingredient(db, dish_ingredient)
 
 def add_dish_ingredient(db: Session, dish_ingredient: DishesIngredients) -> bool:
@@ -292,8 +298,8 @@ def get_order_dish_by_dish_id(db: Session, order_id: int) -> Optional[OrdersDish
 #     return result
 
 #СОЗДАНИЕ
-def create_order_dish(db: Session, id_order, id_dish, amount) -> bool:
-    order_dish = OrdersDishes(id_order=id_order, id_dish=id_dish, amount=amount)
+def create_order_dish(db: Session, order_id, dish_id, amount) -> bool:
+    order_dish = OrdersDishes(order_id=order_id, dish_id=dish_id, amount=amount)
     return add_order_dish(db, order_dish)
 
 def add_order_dish(db: Session, order_dish: OrdersDishes) -> bool:

@@ -13,7 +13,7 @@ Base = declarative_base()
 class Orders(Base):
     __tablename__ = "orders"
     id = Column(Integer, nullable=False, primary_key=True)
-    time = Column(DateTime(), default=datetime.now, onupdate=datetime.now, nullable=False) # в поле автоматически генерируется метка времени при создании записи, метка обновляется при каждой операции UPDATE
+    date = Column(DateTime(), default=datetime.now, onupdate=datetime.now, nullable=False) # в поле автоматически генерируется метка времени при создании записи, метка обновляется при каждой операции UPDATE
     # ....
 # class Ingredients(Base):
 #     __tablename__ = "ingredients"
@@ -46,8 +46,8 @@ class DishesIngredients(Base):
 
    # id = Column(Integer, primary_key=True)
 
-    id_dish = Column(Integer, ForeignKey('dishes.id'), nullable=False, primary_key=True)
-    id_ingredient = Column(Integer, ForeignKey('ingredients.id'),primary_key=True)
+    dish_id = Column(Integer, ForeignKey('dishes.id'), nullable=False, primary_key=True)
+    ingredient_id = Column(Integer, ForeignKey('ingredients.id'),primary_key=True)
     amount = Column(Integer, nullable=False, unique=False)
 
 class OrdersDishes(Base):

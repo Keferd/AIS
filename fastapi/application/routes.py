@@ -74,6 +74,24 @@ async def del_order_by_id(id: int):
                 detail="Can't delete Order data",
             )
 
+# СТАРАЯ ВЕРСИЯ
+# @router.post('/order', status_code=201)
+# async def post_order(order: NewOrdersDTO):
+#     """ Добавление order """
+#     with SessionLocal() as session:
+#         neworder = repository_service.create_order(session)
+#         if neworder is not None:
+#             dishes = order.dishes
+#             for key in dishes:
+#                 repository_service.create_order_dish(session, neworder.id, key, dishes[key])
+#             return Response(status_code=201)
+#         else:
+#             raise HTTPException(
+#                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+#                 detail="Can't add new Order data",
+#             )
+
+
 @router.post('/order', status_code=201)
 async def post_order(order: NewOrdersDTO):
     """ Добавление order """
@@ -255,29 +273,29 @@ async def put_storage_amount(id: int,storage: StorageDTO):
 
 """ -------------------------- ORDERS_DISHES -------------------------- """
 
-@router.get('/or_di_by_or/{id}', response_model=List[OrdersDishesDTO])
-async def get_all_or_di_by_or(id: int):
-    """ Получение всех записей OrderDishes по ID Order """
-    or_di_data: List[OrdersDishesDTO] = []
-    with SessionLocal() as session:
-        result = repository_service.get_order_dish_by_order_id(session, id)
-        for w in result:
-            or_di_data.append(OrdersDishesDTO(id_order=w.id_order,
-                                          id_dish=w.id_dish,
-                                          amount=w.amount))
-    return or_di_data
+# @router.get('/or_di_by_or/{id}', response_model=List[OrdersDishesDTO])
+# async def get_all_or_di_by_or(id: int):
+#     """ Получение всех записей OrderDishes по ID Order """
+#     or_di_data: List[OrdersDishesDTO] = []
+#     with SessionLocal() as session:
+#         result = repository_service.get_order_dish_by_order_id(session, id)
+#         for w in result:
+#             or_di_data.append(OrdersDishesDTO(id_order=w.id_order,
+#                                           id_dish=w.id_dish,
+#                                           amount=w.amount))
+#     return or_di_data
 
-@router.get('/or_di_by_di/{id}', response_model=List[OrdersDishesDTO])
-async def get_all_or_di_by_di(id: int):
-    """ Получение всех записей OrderDishes по ID Dishes """
-    or_di_data: List[OrdersDishesDTO] = []
-    with SessionLocal() as session:
-        result = repository_service.get_order_dish_by_dish_id(session, id)
-        for w in result:
-            or_di_data.append(OrdersDishesDTO(id_order=w.id_order,
-                                          id_dish=w.id_dish,
-                                          amount=w.amount))
-    return or_di_data
+# @router.get('/or_di_by_di/{id}', response_model=List[OrdersDishesDTO])
+# async def get_all_or_di_by_di(id: int):
+#     """ Получение всех записей OrderDishes по ID Dishes """
+#     or_di_data: List[OrdersDishesDTO] = []
+#     with SessionLocal() as session:
+#         result = repository_service.get_order_dish_by_dish_id(session, id)
+#         for w in result:
+#             or_di_data.append(OrdersDishesDTO(id_order=w.id_order,
+#                                           id_dish=w.id_dish,
+#                                           amount=w.amount))
+#     return or_di_data
 
 """ -------------------------- DISHES_INGREDIENTS -------------------------- """
 

@@ -42,6 +42,10 @@ def dbexception(db_func):
 """ -------------------------- Orders -------------------------- """
 
 #ПОЛУЧЕНИЕ
+def get_order_by_id(db: Session,id: int) -> Optional[Orders]:
+    result = db.query(Orders).filter(Orders.id == id).first()
+    return result
+
 def create_order(db: Session) -> Optional[Orders]:
     order = Orders()
     return add_order(db, order)
@@ -278,7 +282,7 @@ def delete_dish_ingredient_by_ingredient_id(db: Session, id: int) -> bool:
 """ -------------------------- OrdersDishes -------------------------- """
 
 #ПОЛУЧЕНИЕ ПО ID ЗАКАЗА
-def get_order_dish_by_order_id(db: Session, dish_id: int) -> Optional[OrdersDishes]:
+def get_order_dish_by_dish_id(db: Session, dish_id: int) -> Optional[OrdersDishes]:
     result = db.query(OrdersDishes).filter(OrdersDishes.dish_id == dish_id).all()
     return result
 
@@ -288,7 +292,7 @@ def get_order_dish_by_order_id(db: Session, dish_id: int) -> Optional[OrdersDish
 #     return result
 
 #ПОЛУЧЕНИЕ ПО ID БЛЮДА
-def get_order_dish_by_dish_id(db: Session, order_id: int) -> Optional[OrdersDishes]:
+def get_order_dish_by_order_id(db: Session, order_id: int) -> Optional[OrdersDishes]:
     result = db.query(OrdersDishes).filter(OrdersDishes.order_id == order_id).all()
     return result
 
@@ -313,16 +317,22 @@ def add_order_dish(db: Session, order_dish: OrdersDishes) -> bool:
     return True
 
 #ИЗМЕНЕНИЕ ПО ID ЗАКАЗА
-def uprade_order_dish_amount_by_order_id(db: Session, id,count ) -> bool:
-    order_dish = get_order_dish_by_order_id(db,id)
-    order_dish.count=count
-    return add_ingredient(db, order_dish)
+def uprade_order_dish_amount_by_order_id(db: Session, order_id,dish_id,count) -> bool:
+    order_dish = get_order_dish_by_order_id(db,order_id)
+    for i in order_dish:
+        if i.dish_id==dish_id:
+            od=OrdersDishes(order_id=i.order_id,
+                            dish_id=i.dish_id,
+                            amount=count)
+
+
+    return add_order_dish(db, od)
 
 #ИЗМЕНЕНИЕ ПО ID БЛЮДА
 def uprade_order_dish_amount_by_dish_id(db: Session, id,count ) -> bool:
     order_dish = get_order_dish_by_dish_id(db,id)
-    order_dish.count=count
-    return add_ingredient(db, order_dish)
+    order_dish.amount=count
+    return add_order_dish(db, order_dish)
 
 #УДАЛЕНИЕ ПО ID ЗАКАЗА
 def delete_order_dish_by_order_id(db: Session, id: int) -> bool:

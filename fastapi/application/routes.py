@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, status, Request, Response
 from starlette.responses import RedirectResponse
 from application.models.dto import *
+from application.models.dao import oruz
 from application.models.dto.dishes_dto import DishesDTO
 from application.models.dto.ingredients_dto import IngredientsDTO
 from application.models.dto.orders_dishes_dto import OrdersDishesDTO
@@ -90,7 +91,7 @@ async def get_order_by_id(id: int):
         result = repository_service.get_order_dish_by_order_id(session, id)
         dishes = {}
         for i in result:
-            dishes[i.id_dish] = i.amount
+            dishes[i.dish_id] = i.amount
     if response is None:
         return Response(status_code=204)
     return OrdersDTO(time=response.date, dishes=dishes)
@@ -99,11 +100,17 @@ async def get_order_by_id(id: int):
 async def put_order(id: int ,order: OrdersDTO):
     """ Обновить Order """
     with SessionLocal() as session:
-        neworder = repository_service.delete_order_dish_by_order_id(session, id)
-        if neworder:
-            dishes = order.dishes
-            for key in dishes:
-                repository_service.create_dish_ingredient(session, id, key, dishes[key])
+        response = repository_service.get_order_by_id(session, id)
+
+        #repository_service.delete_order_dish_by_order_id(session, id)
+        if response:
+            new_dishes=order.dishes
+            orders_dishes=repository_service.get_order_dish_by_order_id(session,response.id)
+            for i in new_dishes.keys():
+                repository_service.uprade_order_dish_amount_by_order_id(session,order_id=response.id,dish_id=i,count=new_dishes[i])
+
+            # for key in dishes:
+            #     repository_service.create_dish_ingredient(session, id, key, dishes[key])
             return Response(status_code=202)
         else:
             raise HTTPException(
@@ -152,7 +159,7 @@ async def get_dish_by_id(id: int):
         result = repository_service.get_dish_ingredient_by_dish_id(session, id)
         ingredients = {}
         for i in result:
-            ingredients[i.id_ingredient] = i.amount
+            ingredients[i.ingredient_id] = i.amount
     if response is None:
         return Response(status_code=204)
     return DishesDTO(name=response.name, ingredients=ingredients)
@@ -315,8 +322,8 @@ async def get_all_or_di_by_or(id: int):
     with SessionLocal() as session:
         result = repository_service.get_all_order_dish_by_order_id(session, id)
         for w in result:
-            or_di_data.append(OrdersDishesDTO(id_order=w.id_order,
-                                          id_dish=w.id_dish,
+            or_di_data.append(OrdersDishesDTO(order_id=w.order_id,
+                                          dish_id=w.dish_id,
                                           amount=w.amount))
     return or_di_data
 
@@ -327,8 +334,8 @@ async def get_all_or_di_by_di(id: int):
     with SessionLocal() as session:
         result = repository_service.get_all_order_dish_by_dishes_id(session, id)
         for w in result:
-            or_di_data.append(OrdersDishesDTO(id_order=w.id_order,
-                                          id_dish=w.id_dish,
+            or_di_data.append(OrdersDishesDTO(order_id=w.order_id,
+                                          dish_id=w.dish_id,
                                           amount=w.amount))
     return or_di_data
 

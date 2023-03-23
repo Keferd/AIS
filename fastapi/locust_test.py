@@ -147,6 +147,69 @@ class RESTServerUser(HttpUser):
             else:
                 response.failure(f'Status code is {response.status_code}')
 
+    @tag("put_ingredient")
+    @task(3)
+    def put_ingredient(self):
+        """ Тест PUT-запроса (обновление записи о погоде) """
+        ingredient_id = random.randint(9, 42)
+        # получаем случайное значение населенного пункта из списка CITY_NAMES
+        test_data = {'count': random.randint(100, 2000)}
+        put_data = json.dumps(test_data)
+        # отправляем PUT-запрос на адрес <SERVER>/api/weatherforecast/{city_name}
+        with self.client.put(f'/api/ingredient?id={ingredient_id}',
+                             catch_response=True,
+                             name='/api/ingredient?id={ID}',
+                             data=put_data,
+                             headers={'content-type': 'application/json'}) as response:
+            if response.status_code == 202:
+                response.success()
+            else:
+                response.failure(f'Status code is {response.status_code}')
+
+    @tag("put_storage")
+    @task(3)
+    def put_storage(self):
+        """ Тест PUT-запроса (обновление записи о погоде) """
+        storage_id = random.randint(18, 700)
+        # получаем случайное значение населенного пункта из списка CITY_NAMES
+        test_data = {'count': random.randint(100, 2000),
+                     'expiry_date':random.randint(100, 2000),
+                     'ingredient_id':random.randint(100, 2000)}
+        put_data = json.dumps(test_data)
+        # отправляем PUT-запрос на адрес <SERVER>/api/weatherforecast/{city_name}
+        with self.client.put(f'/api/storage?id={storage_id}',
+                             catch_response=True,
+                             name='/api/storage?id={ID}',
+                             data=put_data,
+                             headers={'content-type': 'application/json'}) as response:
+            if response.status_code == 202:
+                response.success()
+            else:
+                response.failure(f'Status code is {response.status_code}')
+
+    @tag("put_order")
+    @task(3)
+    def put_order(self):
+        """ Тест PUT-запроса (обновление записи о погоде) """
+        order_id = random.randint(18, 700)
+        fields_amount = random.randint(3, 6)
+        dishes = {}
+        for i in range(fields_amount):
+            dish = random.randint(3, 22)
+            amount = random.randint(1, 5)
+            dishes.update({f"{dish}": amount})
+        test_data = {'dishes': dishes}
+        put_data = json.dumps(test_data)
+        # отправляем PUT-запрос на адрес <SERVER>/api/weatherforecast/{city_name}
+        with self.client.put(f'/api/order?id={order_id}',
+                             catch_response=True,
+                             name='/api/order?id={ID}',
+                             data=put_data,
+                             headers={'content-type': 'application/json'}) as response:
+            if response.status_code == 202:
+                response.success()
+            else:
+                response.failure(f'Status code is {response.status_code}')
 
 
 

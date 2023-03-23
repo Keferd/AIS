@@ -3,7 +3,7 @@ from starlette.responses import RedirectResponse
 from application.models.dto import *
 from application.models.dao import oruz
 from application.models.dto.dishes_dto import DishesDTO
-from application.models.dto.ingredients_dto import IngredientsDTO
+from application.models.dto.ingredients_dto import *
 from application.models.dto.orders_dishes_dto import OrdersDishesDTO
 from application.models.dto.orders_dto import OrdersDTO
 from application.models.dto.storage_dto import StorageDTO
@@ -96,26 +96,41 @@ async def get_order_by_id(id: int):
         return Response(status_code=204)
     return OrdersDTO(time=response.date, dishes=dishes)
 
+# @router.put('/order', status_code=202)
+# async def put_order(id: int ,order: OrdersDTO):
+#     """ Обновить Order """
+#     with SessionLocal() as session:
+#         response = repository_service.get_order_by_id(session, id)
+#         #repository_service.delete_order_dish_by_order_id(session, id)
+#         if response:
+#             new_dishes=order.dishes
+#             orders_dishes=repository_service.get_order_dish_by_order_id(session,response.id)
+#             for i in new_dishes.keys():
+#                 repository_service.uprade_order_dish_amount_by_order_id(session,order_id=response.id,dish_id=i,count=new_dishes[i])
+#
+#             # for key in dishes:
+#             #     repository_service.create_dish_ingredient(session, id, key, dishes[key])
+#             return Response(status_code=202)
+#         else:
+#             raise HTTPException(
+#                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+#                 detail="Can't update Weather data",
+#             )
+
 @router.put('/order', status_code=202)
 async def put_order(id: int ,order: OrdersDTO):
     """ Обновить Order """
     with SessionLocal() as session:
-        response = repository_service.get_order_by_id(session, id)
-
-        #repository_service.delete_order_dish_by_order_id(session, id)
-        if response:
-            new_dishes=order.dishes
-            orders_dishes=repository_service.get_order_dish_by_order_id(session,response.id)
-            for i in new_dishes.keys():
-                repository_service.uprade_order_dish_amount_by_order_id(session,order_id=response.id,dish_id=i,count=new_dishes[i])
-
-            # for key in dishes:
-            #     repository_service.create_dish_ingredient(session, id, key, dishes[key])
+        neworder = repository_service.delete_order_dish_by_order_id(session, id)
+        if neworder:
+            dishes = order.dishes
+            for key in dishes:
+                repository_service.create_order_dish(session, id, key, dishes[key])
             return Response(status_code=202)
         else:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Can't update Weather data",
+                detail="Can't update Order data",
             )
 
 @router.delete('/order', status_code=200)
@@ -247,12 +262,13 @@ async def post_ingredient(ingredient: IngredientsDTO):
             )
 
 @router.put('/ingredient', status_code=202)
-async def put_ingredient(id: int ,ingredient: IngredientsDTO):
+async def put_ingredient(id: int ,ingredient: IngredientDTO):
     """ Обновить Ingredients """
     with SessionLocal() as session:
+        ing=repository_service.get_ingredient_by_id(session,id)
         if repository_service.uprade_ingredient_by_id(session,
                                                      id = id,
-                                                     name = ingredient.name,
+                                                     name = ing.name,
                                                      count = ingredient.count):
             return Response(status_code=202)
         else:

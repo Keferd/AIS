@@ -292,7 +292,7 @@ def get_order_dish_by_dish_id(db: Session, dish_id: int) -> Optional[OrdersDishe
 #     return result
 
 #ПОЛУЧЕНИЕ ПО ID БЛЮДА
-def get_order_dish_by_order_id(db: Session, order_id: int) -> Optional[OrdersDishes]:
+def get_order_dish_by_order_id(db: Session, order_id: int) -> Iterable[OrdersDishes]:
     result = db.query(OrdersDishes).filter(OrdersDishes.order_id == order_id).all()
     return result
 
@@ -338,7 +338,8 @@ def uprade_order_dish_amount_by_dish_id(db: Session, id,count ) -> bool:
 def delete_order_dish_by_order_id(db: Session, id: int) -> bool:
     order_dish = get_order_dish_by_order_id(db, id)
     try:
-        db.delete(order_dish)
+        for or_di in order_dish:
+            db.delete(or_di)
         db.commit()
     except Exception as ex:
         print(traceback.format_exc())

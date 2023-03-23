@@ -8,3 +8,6 @@ from datetime import datetime
 class IngredientsDTO(BaseModel):
     name: str
     count: int
+
+class IngredientDTO(BaseModel):
+    count: int

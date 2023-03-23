@@ -37,13 +37,13 @@ class DishesIngredients(Base):
     __tablename__ = 'dishes_ingredients'
     id_dish = Column(Integer, ForeignKey('dishes.id'), nullable=False, primary_key=True)
     id_ingredient = Column(Integer, ForeignKey('ingredients.id'),primary_key=True)
-    amount = Column(Integer, nullable=False, unique=False)
+    count = Column(Integer, nullable=False, unique=False)
 
 class OrdersDishes(Base):
     __tablename__ = 'orders_dishes'
     id_dish = Column(Integer, ForeignKey('dishes.id'), nullable=False, primary_key=True)
     id_order = Column(Integer, ForeignKey('ingredients.id'),primary_key=True)
-    amount = Column(Integer, nullable=False, unique=False)
+    count = Column(Integer, nullable=False, unique=False)
 
 class Test(Base):
     __tablename__ = 'TEST'

@@ -242,8 +242,8 @@ def get_dish_ingredient_by_ingredient_id(db: Session, id_ingredient: int) -> Ite
     return result
 
 #СОЗДАНИЕ
-def create_dish_ingredient(db: Session, id_dish, id_ingredient, amount) -> bool:
-    dish_ingredient = DishesIngredients(id_dish=id_dish, id_ingredient=id_ingredient, amount=amount)
+def create_dish_ingredient(db: Session, id_dish, id_ingredient, count) -> bool:
+    dish_ingredient = DishesIngredients(id_dish=id_dish, id_ingredient=id_ingredient, count=count)
     return add_dish_ingredient(db, dish_ingredient)
 
 def add_dish_ingredient(db: Session, dish_ingredient: DishesIngredients) -> bool:
@@ -257,13 +257,13 @@ def add_dish_ingredient(db: Session, dish_ingredient: DishesIngredients) -> bool
     return True
 
 #ИЗМЕНЕНИЕ ПО ID БЛЮДА
-def uprade_dish_ingredient_amount_by_dish_id(db: Session, id,count ) -> bool:
+def uprade_dish_ingredient_count_by_dish_id(db: Session, id,count ) -> bool:
     dish_ingredient = get_dish_ingredient_by_dish_id(db,id)
     dish_ingredient.count=count
     return add_dish_ingredient(db, dish_ingredient)
 
 #ИЗМЕНЕНИЕ ПО ID ИНГРЕДИЕНТА
-def uprade_dish_ingredient_amount_by_ingredient_id(db: Session, id,count ) -> bool:
+def uprade_dish_ingredient_count_by_ingredient_id(db: Session, id,count ) -> bool:
     dish_ingredient = get_dish_ingredient_by_ingredient_id(db,id)
     dish_ingredient.count=count
     return add_dish_ingredient(db, dish_ingredient)
@@ -306,8 +306,8 @@ def get_order_dish_by_dish_id(db: Session, id_dish: int) -> Iterable[OrdersDishe
     return result
 
 #СОЗДАНИЕ
-def create_order_dish(db: Session, id_order, id_dish, amount) -> bool:
-    order_dish = OrdersDishes(id_order=id_order, id_dish=id_dish, amount=amount)
+def create_order_dish(db: Session, id_order, id_dish, count) -> bool:
+    order_dish = OrdersDishes(id_order=id_order, id_dish=id_dish, count=count)
     return add_order_dish(db, order_dish)
 
 def add_order_dish(db: Session, order_dish: OrdersDishes) -> bool:
@@ -321,13 +321,13 @@ def add_order_dish(db: Session, order_dish: OrdersDishes) -> bool:
     return True
 
 #ИЗМЕНЕНИЕ ПО ID ЗАКАЗА
-def uprade_order_dish_amount_by_order_id(db: Session, id,count ) -> bool:
+def uprade_order_dish_count_by_order_id(db: Session, id,count ) -> bool:
     order_dish = get_order_dish_by_order_id(db,id)
     order_dish.count=count
     return add_order_dish(db, order_dish)
 
 #ИЗМЕНЕНИЕ ПО ID БЛЮДА
-def uprade_order_dish_amount_by_dish_id(db: Session, id,count ) -> bool:
+def uprade_order_dish_count_by_dish_id(db: Session, id,count ) -> bool:
     order_dish = get_order_dish_by_dish_id(db,id)
     order_dish.count=count
     return add_order_dish(db, order_dish)

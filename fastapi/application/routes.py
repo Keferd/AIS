@@ -41,7 +41,7 @@ async def get_order_by_id(id: int):
         result = repository_service.get_order_dish_by_order_id(session, id)
         dishes = {}
         for i in result:
-            dishes[i.id_dish] = i.amount
+            dishes[i.id_dish] = i.count
     if response is None:
         return Response(status_code=204)
     return OrdersDTO(date=response.date, dishes=dishes)
@@ -118,7 +118,7 @@ async def get_dish_by_id(id: int):
         result = repository_service.get_dish_ingredient_by_dish_id(session, id)
         ingredients = {}
         for i in result:
-            ingredients[i.id_ingredient] = i.amount
+            ingredients[i.id_ingredient] = i.count
     if response is None:
         return Response(status_code=204)
     return DishesDTO(name=response.name, ingredients=ingredients)
@@ -260,7 +260,7 @@ async def post_storage(storage: StorageDTO):
             )
 
 @router.put('/storage', status_code=202)
-async def put_storage_amount(id: int,storage: StorageDTO):
+async def put_storage_count(id: int,storage: StorageDTO):
     """ Обновить Storage """
     with SessionLocal() as session:
         if repository_service.uprade_storage_by_id(session,id=id,count=storage.count,expiry_date=storage.expiry_date,id_ingredient=storage.id_ingredient):

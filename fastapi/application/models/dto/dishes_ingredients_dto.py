@@ -8,4 +8,4 @@ from datetime import datetime
 class DishesIngredientsDTO(BaseModel):
     id_dish = int
     id_ingredient = int
-    amount: int
+    count: int

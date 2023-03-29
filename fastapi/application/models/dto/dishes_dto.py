@@ -8,3 +8,7 @@ from datetime import datetime
 class DishesDTO(BaseModel):
     name: str
     ingredients: Dict[int, int] = None
+
+class DishDTO(BaseModel):
+    id: int
+    name: str

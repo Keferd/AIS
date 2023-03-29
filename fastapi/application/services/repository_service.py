@@ -5,6 +5,7 @@ from application.models.dto import *
 import functools
 import traceback
 
+from application.models.dto.dishes_dto import DishDTO
 from application.models.dto.ingredients_dto import IngredientssDTO
 from application.models.dto.orders_dto import OrderDTO
 
@@ -91,7 +92,15 @@ def delete_order_by_id(db: Session, id: int) -> bool:
     return True
 
 """ -------------------------- Dishes -------------------------- """
+def get_dishes(db: Session) -> Iterable[Dishes]:
+    ingredients_data: List[Dishes]=[]
+    result = db.query(Dishes).all()
+    for w in result:
+        ingredients_data.append(map_dish_data_to_dto(w))
+    return ingredients_data
 
+def map_dish_data_to_dto(dish_dao: Dishes):
+    return DishDTO(id=dish_dao.id,name=dish_dao.name)
 #ПОЛУЧЕНИЕ ПО ID
 def get_dish_by_id(db: Session, id: int) -> Optional[Dishes]:
     result = db.query(Dishes).filter(Dishes.id == id).first()

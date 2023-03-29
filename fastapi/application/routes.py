@@ -3,7 +3,7 @@ from typing import Optional, Iterable
 from starlette.responses import RedirectResponse
 from application.models.dto import *
 from application.models.dao import oruz
-from application.models.dto.dishes_dto import DishesDTO
+from application.models.dto.dishes_dto import DishesDTO, DishDTO
 from application.models.dto.ingredients_dto import *
 from application.models.dto.orders_dishes_dto import OrdersDishesDTO
 from application.models.dto.orders_dto import OrdersDTO, OrderDTO
@@ -172,6 +172,12 @@ async def post_order(order: OrdersDTO):
             )
 
 """ -------------------------- Dishes -------------------------- """
+@router.get('/dishes', response_model=List[DishDTO])
+async def get_dishes():
+    """ Получение ingredient по id """
+    with SessionLocal() as session:
+        response = repository_service.get_dishes(session)
+        return response
 
 @router.get('/dish', response_model=DishesDTO)
 async def get_dish_by_id(id: int):

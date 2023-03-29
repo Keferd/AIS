@@ -8,6 +8,7 @@ import traceback
 from application.models.dto.dishes_dto import DishDTO
 from application.models.dto.ingredients_dto import IngredientssDTO
 from application.models.dto.orders_dto import OrderDTO
+from application.models.dto.storage_dto import StoragesDTO
 
 """
 
@@ -207,7 +208,15 @@ def delete_ingredient_by_id(db: Session, id: int) -> bool:
     return True
 
 """ -------------------------- Storage -------------------------- """
+def get_storages(db: Session) -> Iterable[Storage]:
+    ingredients_data: List[Storage]=[]
+    result = db.query(Storage).all()
+    for w in result:
+        ingredients_data.append(map_storage_data_to_dto(w))
+    return ingredients_data
 
+def map_storage_data_to_dto(storage_dao: Storage):
+    return StoragesDTO(id=storage_dao.id,count=storage_dao.count,date=storage_dao.expiry_date,id_ingredient=storage_dao.ingredient_id)
 #ПОЛУЧЕНИЕ ПО ID
 def get_storage_by_id(db: Session, id: int) -> Optional[Storage]:
     result = db.query(Storage).filter(Storage.id == id).first()

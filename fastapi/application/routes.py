@@ -7,7 +7,7 @@ from application.models.dto.dishes_dto import DishesDTO, DishDTO
 from application.models.dto.ingredients_dto import *
 from application.models.dto.orders_dishes_dto import OrdersDishesDTO
 from application.models.dto.orders_dto import OrdersDTO, OrderDTO
-from application.models.dto.storage_dto import StorageDTO
+from application.models.dto.storage_dto import StorageDTO, StoragesDTO
 from application.services.weather_service import WeatherService
 
 
@@ -298,6 +298,12 @@ async def put_ingredient(id: int ,ingredient: IngredientDTO):
             )
 
 """ -------------------------- Storage -------------------------- """
+@router.get('/storages', response_model=List[StoragesDTO])
+async def get_storages():
+    """ Получение ingredient по id """
+    with SessionLocal() as session:
+        response = repository_service.get_storages(session)
+        return response
 
 @router.get('/storage', response_model=StorageDTO)
 async def get_storage_by_id(id: int):

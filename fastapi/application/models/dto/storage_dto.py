@@ -9,3 +9,9 @@ class StorageDTO(BaseModel):
     count: int
     expiry_date: datetime
     ingredient_id: int
+
+class StoragesDTO(BaseModel):
+    id: int
+    count: int
+    date: datetime
+    id_ingredient: int

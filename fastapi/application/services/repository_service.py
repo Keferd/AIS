@@ -1,9 +1,12 @@
-from typing import Optional, Iterable
+from typing import Optional, Iterable,List
 from sqlalchemy.orm import Session
 from application.models.dao.oruz import *
+from application.models.dto import *
 import functools
 import traceback
 
+from application.models.dto.ingredients_dto import IngredientssDTO
+from application.models.dto.orders_dto import OrderDTO
 
 """
 
@@ -49,6 +52,16 @@ def get_order_by_id(db: Session,id: int) -> Optional[Orders]:
 def create_order(db: Session) -> Optional[Orders]:
     order = Orders()
     return add_order(db, order)
+
+def get_orders(db: Session) -> Iterable[Orders]:
+    ingredients_data: List[OrderDTO]=[]
+    result = db.query(Orders).all()
+    for w in result:
+        ingredients_data.append(map_order_data_to_dto(w))
+    return ingredients_data
+
+def map_order_data_to_dto(order_dao: Orders):
+    return OrderDTO(id=order_dao.id,date=order_dao.date)
 
 def add_order(db: Session) -> None:
     order1 = Orders()
@@ -127,6 +140,20 @@ def delete_dish_by_id(db: Session, id: int) -> bool:
 def get_ingredient_by_id(db: Session, id: int) -> Optional[Ingredients]:
     result = db.query(Ingredients).filter_by(id=id).first()
     return result
+
+def get_ingredients(db: Session) -> Iterable[Ingredients]:
+    ingredients_data: List[IngredientssDTO]=[]
+    result = db.query(Ingredients).all()
+    for w in result:
+        ingredients_data.append(map_ingredient_data_to_dto(w))
+    return ingredients_data
+
+def map_ingredient_data_to_dto(ingredient_dao: Ingredients):
+    return IngredientssDTO(id=ingredient_dao.id,
+                           name=ingredient_dao.name,
+                           count = ingredient_dao.count)
+
+
 def increace_ingredient_count_by_id(db: Session, id,count ) -> bool:
     ingredient = get_ingredient_by_id(db,id)
     ingredient.count = ingredient.count + count

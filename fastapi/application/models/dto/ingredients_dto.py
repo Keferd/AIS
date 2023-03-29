@@ -11,3 +11,8 @@ class IngredientsDTO(BaseModel):
 
 class IngredientDTO(BaseModel):
     count: int
+
+class IngredientssDTO(BaseModel):
+    id: int
+    name: str
+    count: int

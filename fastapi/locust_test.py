@@ -6,7 +6,7 @@ from locust import HttpUser, task, tag, between
 
 class RESTServerUser(HttpUser):
     """ Класс, эмулирующий пользователя / клиента сервера """
-    wait_time = between(1.0, 5.0)       # время ожидания пользователя перед выполнением новой task
+    wait_time = between(0.1, 0.2)       # время ожидания пользователя перед выполнением новой task
 
     # Адрес, к которому клиенты (предположительно) обращаются в первую очередь (это может быть индексная страница, страница авторизации и т.п.)
     def on_start(self):
@@ -101,7 +101,7 @@ class RESTServerUser(HttpUser):
                 response.failure(f'Status code is {response.status_code}')
 
     @tag("post_dish")
-    @task(1)
+    @task(50)
     def post_dish(self):
         """ Тест POST-запроса (создание записи о погоде) """
         # Генерируем случайные данные в опредленном диапазоне
@@ -126,7 +126,7 @@ class RESTServerUser(HttpUser):
                 response.failure(f'Status code is {response.status_code}')
 
     @tag("post_storage")
-    @task(1)
+    @task(50)
     def post_storage(self):
         """ Тест POST-запроса (создание записи о погоде) """
         # Генерируем случайные данные в опредленном диапазоне

@@ -1,11 +1,12 @@
 from fastapi import APIRouter, HTTPException, status, Request, Response
+from typing import Optional, Iterable
 from starlette.responses import RedirectResponse
 from application.models.dto import *
 from application.models.dao import oruz
 from application.models.dto.dishes_dto import DishesDTO
 from application.models.dto.ingredients_dto import *
 from application.models.dto.orders_dishes_dto import OrdersDishesDTO
-from application.models.dto.orders_dto import OrdersDTO
+from application.models.dto.orders_dto import OrdersDTO, OrderDTO
 from application.models.dto.storage_dto import StorageDTO
 from application.services.weather_service import WeatherService
 
@@ -96,6 +97,12 @@ async def get_order_by_id(id: int):
         return Response(status_code=204)
     return OrdersDTO(time=response.date, dishes=dishes)
 
+@router.get('/orders', response_model=List[OrderDTO])
+async def get_orders():
+    """ Получение ingredient по id """
+    with SessionLocal() as session:
+        response = repository_service.get_orders(session)
+        return response
 # @router.put('/order', status_code=202)
 # async def put_order(id: int ,order: OrdersDTO):
 #     """ Обновить Order """
@@ -234,6 +241,13 @@ async def get_ingredient_by_id(id: int):
     if response is None:
         return Response(status_code=204)
     return IngredientsDTO(name=response.name, count=response.count)
+
+@router.get('/ingredients', response_model=List[IngredientssDTO])
+async def get_ingredients():
+    """ Получение ingredient по id """
+    with SessionLocal() as session:
+        response = repository_service.get_ingredients(session)
+        return response
 
 @router.delete('/ingredient', status_code=200)
 async def del_ingredient_by_id(id: int):

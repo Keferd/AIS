@@ -8,3 +8,7 @@ from datetime import datetime
 
 class OrdersDTO(BaseModel):
     dishes: Dict[int, int] = None
+
+class OrderDTO(BaseModel):
+    id: int
+    date: datetime

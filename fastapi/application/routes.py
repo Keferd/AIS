@@ -163,6 +163,10 @@ async def post_order(order: OrdersDTO):
                 repository_service.create_order_dish(db=session,order_id=neworder.id,dish_id=key,amount=dishes[key])
                 ingredients_for_dishes=repository_service.get_dish_ingredient_by_dish_id(session,key)
                 for ing in ingredients_for_dishes:
+                     ingrt=repository_service.get_ingredient_by_id(session,ing.ingredient_id)
+                     if(ingrt.count<dishes[key]*(ing.amount)):
+                         repository_service.create_storage(session,count=2000,date=datetime.now(),ingredient_id=ingrt.id)
+                         repository_service.increace_ingredient_count_by_id(session,id=ingrt.id,count=2000)
                      repository_service.increace_ingredient_count_by_id(session, ing.ingredient_id, -dishes[key]*(ing.amount))
             return Response(status_code=201)
         else:

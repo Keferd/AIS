@@ -44,23 +44,56 @@ xhr.onload = function() {
     let field = document.getElementById("menu__field");
     
     for (let id in MENU){
-        field.innerHTML += `
+        let value=localStorage.getItem(MENU[id]['id']);
+        let huk=0;
+        if(value!=null){
+            huk=value;
+        }
+        field.insertAdjacentHTML('beforeend',`
             <div class="menu__product" id="` + MENU[id]['id'] + `">
                 <img class="menu__item-img" src="img/` + MENU[id]['id'] + `.jpg" alt="img.jpg">
                 <div class="menu__details">
                     <div class="manu__name">
                         ` + MENU[id]['name'] + `
                     </div>
+                    <script src="js/btn_script.js"></script>
                     <div class="manu__ctrl-panel">
-                        <div class="manu__btn">+</div>
-                        <div class="menu__value">0</div>
-                        <div class="manu__btn__dec">-</div>                      
+                        <div class="manu__btn" >+</div>
+                        <div class="menu__value">`+huk+`</div>
+                        <div class="manu__btn__dec">-</div>                     
                         
                     </div>
                 </div>
             </div>
-        `;
+        `);
+        
     }
+    for (let id in MENU){
+        let menu__item = document.getElementById(MENU[id]['id']);
+        let button_inc = menu__item.querySelector('.manu__btn');
+        let button_dec = menu__item.querySelector('.manu__btn__dec');
+        // = menu__item.querySelector('.menu__value');
+        //let value=parseInt(value_field.textContent);
+        button_inc.addEventListener('click',function() {
+            console.log('Нажата новая кнопка '+MENU[id]['id']);
+            let value_field=button_inc.parentElement.querySelector('.menu__value')
+            let value = parseInt(value_field.textContent);
+            value_field.innerHTML=(value+1);
+            localStorage.setItem(MENU[id]['id'],value+1);
+        });
+        button_dec.addEventListener('click',function() {
+            console.log('Нажата новая кнопка '+MENU[id]['id']);
+            let value_field=button_dec.parentElement.querySelector('.menu__value')
+            let value = parseInt(value_field.textContent);
+            if(value>0){
+                value_field.innerHTML=(value-1);
+                localStorage.setItem(MENU[id]['id'],value-1);
+            }
+        });
+    }
+    // document.querySelector('manu__btn').addEventListener('click', function() {
+    //     alert('Нажата новая кнопка');
+    // });
      // выводим данные в консоль
   } else {
     console.error('Ошибка при получении данных:', xhr.statusText); // если ответ неудачный, выводим сообщение об ошибке

@@ -28,7 +28,7 @@ service = WeatherService()              # подключаем слой с до�
 @router.get('/')
 async def root():
     """ Переадресация на страницу Swagger """
-    return RedirectResponse(url='/docs', status_code=307)
+    return RedirectResponse(url='/', status_code=307)
 
 """ -------------------------- Order -------------------------- """
 

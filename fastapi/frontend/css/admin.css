@@ -10,10 +10,15 @@
 .admin__aside {
     background-color: #cecece;
     width: 200px;
+    padding: 20px 20px;
+    overflow: auto;
+    max-height: calc(100vh - 200px);
+}
+
+.admin__list {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 20px 20px;
 }
 
 .admin__article {
@@ -29,24 +34,23 @@
 
 .admin__main {
     flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: scroll;
+    overflow: auto;
+    max-height: calc(100vh - 200px);
 }
 
 .admin__placeholder {
     color: #a7a7a7;
     font-size: 48px;
     padding: 20px;
+    padding: auto;
+    
 
 }
 
 /* ADMIN TABLE */
 
 .admin__tablefield {
-    height: 100%;
-    width: 100%;
+    width: auto;
     padding: 0 20px;
 }
 
@@ -73,6 +77,7 @@
 .admin__table td:last-child, .admin__table th:last-child {
     border: none;
 }
+
 
 
 /* MEDIA */

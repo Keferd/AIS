@@ -1,27 +1,3 @@
-// async function loadMen(url){    
-// //     const response = await fetch(url)
-// //     .then((res) => res.json())
-// //     .then((data) => {
-// //         MENU.push(data);
-// //       });  
-// // }
-
-
-
- 
-// let url1 = 'http://127.0.0.1:8000/api/dishes';
-// async function loadMen(url){
-// await fetch(url1).then((response) => response.json())
-// .then((response) => {
-//     MENU.push(response);
-//   }); 
-// } 
-// loadMen(url1);
-// console.log(MENU); 
-
-// // }
-// // let url1 = 'http://127.0.0.1:8000/api/dishes';
-// // const MENUSHKA =loadMen(url1);
 const xhr = new XMLHttpRequest();
 const url = 'http://127.0.0.1:8000/api/dishes'; // URL сервера, откуда получаем данные
 
@@ -78,7 +54,8 @@ xhr.onload = function() {
                     <div class="manu__ctrl-panel">
                         <div class="manu__btn">+</div>
                         <div class="menu__value">0</div>
-                        <div class="manu__btn">-</div>
+                        <div class="manu__btn__dec">-</div>                      
+                        
                     </div>
                 </div>
             </div>
@@ -90,7 +67,8 @@ xhr.onload = function() {
   }
 };
 xhr.send(); 
-console.log(MENU);
+
+
 document.addEventListener("DOMContentLoaded", () => {
     
 

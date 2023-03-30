@@ -80,6 +80,65 @@
 
 
 
+
+
+
+
+
+
+.admin__form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin__h1 {
+    color: #0f0f0f;
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 50px;
+}
+
+.admin__input {
+    height: 48px;
+    font-size: 24px;
+    padding: 5px 20px;
+    margin-bottom: 40px;
+    background-color: #0f0f0f;
+    color:#f0f0f0;
+    border-radius: 5px;
+    border: none;
+}
+
+.admin__input:hover {
+    outline: 2px solid #1f41ff;
+}
+
+.admin__input:focus {
+    border: none;
+    outline: 2px solid #1f41ff;
+}
+
+.admin__submit {
+    background-color: #B82727;
+    color:#f0f0f0;
+    height: 60px;
+    width: 200px;
+    font-size: 24px;
+    border-radius: 30px;
+    border: none;
+}
+
+.admin__submit:hover {
+    background-color: #f0f0f0;
+    color: #B82727;
+    outline: 3px solid #B82727;
+    cursor: pointer;
+}
+
+
+
 /* MEDIA */
 
 @media (max-width: 800px) {

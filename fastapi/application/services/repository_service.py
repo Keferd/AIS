@@ -170,6 +170,12 @@ def uprade_ingredient_by_id(db: Session, id,name,count ) -> bool:
     ingredient.count=count
     return add_ingredient(db, ingredient)
 
+#ИЗМЕНЕНИЕ КОЛИЧЕСТВА
+def uprade_ingredient_count_by_id(db: Session, id, count) -> bool:
+    ingredient = get_ingredient_by_id(db,id)
+    ingredient.count=count
+    return add_ingredient(db, ingredient)
+
 #УДАЛЕНИЕ
 def delete_ingredient_by_id(db: Session, id: int) -> bool:
     ingredient = get_ingredient_by_id(db, id)
@@ -192,6 +198,11 @@ def get_storage_by_id(db: Session, id: int) -> Optional[Storage]:
 #ПОЛУЧЕНИЕ ПО ID ИНГРЕДИЕНТА
 def get_storage_by_ingredient_id(db: Session, id: int) -> Iterable[Storage]:
     result = db.query(Storage).filter(Storage.id_ingredient == id).all()
+    return result
+
+#ПОЛУЧЕНИЕ ПО ID ИНГРЕДИЕНТА НЕПУСТЫХ ПАРТИЙ
+def get_storage_filled_by_ingredient_id(db: Session, id: int) -> Iterable[Storage]:
+    result = db.query(Storage).filter(Storage.id_ingredient == id and Storage.count > 0).all()
     return result
 
 #СОЗДАНИЕ
@@ -228,6 +239,29 @@ def delete_storage_by_id(db: Session, id: int) -> bool:
         db.rollback()
         return False
     return True
+
+def decrease_storage(db: Session, id_ingredient: int, decrease_count: int) -> int:
+    ingredients = get_storage_filled_by_ingredient_id(db,id_ingredient)
+    for ingredient in ingredients:
+        if decrease_count > 0:
+            if ingredient.count < decrease_count:
+                decrease_count = decrease_count - ingredient.count
+                ingredient.count = 0
+                add_storage(db, ingredient)
+            else:
+                ingredient.count = ingredient.count - decrease_count
+                decrease_count = 0
+    while decrease_count > 0:
+        new_count = 1000
+        if new_count < decrease_count:
+            decrease_count = decrease_count - new_count
+            new_count = 0
+        else:
+            new_count = new_count - decrease_count
+            decrease_count = 0
+            uprade_ingredient_count_by_id(db,id_ingredient,new_count)
+        create_storage(db, new_count, datetime.now, id_ingredient)
+    return 0
 
 
 """ -------------------------- DishesIngredients -------------------------- """
@@ -310,6 +344,7 @@ def create_order_dish(db: Session, id_order, id_dish, count) -> bool:
     order_dish = OrdersDishes(id_order=id_order, id_dish=id_dish, count=count)
     return add_order_dish(db, order_dish)
 
+# ДОБАВЛЕНИЕ ORDER-DISH
 def add_order_dish(db: Session, order_dish: OrdersDishes) -> bool:
     try:
         db.add(order_dish)

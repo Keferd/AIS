@@ -91,7 +91,7 @@ async def del_order_by_id(id: int):
 #                 detail="Can't add new Order data",
 #             )
 
-
+""" ------------ РАБОТАЮЩИЙ POST-ЗАПРОС ------------- """
 @router.post('/order', status_code=201)
 async def post_order(order: NewOrdersDTO):
     """ Добавление order """
@@ -107,6 +107,34 @@ async def post_order(order: NewOrdersDTO):
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Can't add new Order data",
             )
+        
+# @router.post('/order', status_code=201)
+# async def post_order(order: NewOrdersDTO):
+#     """ Добавление order """
+#     with SessionLocal() as session:
+#         neworder = repository_service.create_order(session)
+#         if neworder is not None:
+#             dishes = order.dishes
+#             ingredients_of_order = {}
+#             for key in dishes:
+#                 dish = repository_service.create_order_dish(session, neworder.id, key, dishes[key])
+#                 if dish:
+#                     ingredients_of_dish = repository_service.get_dish_ingredient_by_dish_id(session,key)
+#                     for ing in ingredients_of_dish:
+#                         if ingredients_of_order[ing.id_ingredient] != None:
+#                             ingredients_of_order[ing.id_ingredient] = ingredients_of_order[ing.id_ingredient] + ing.id_ingredient * ing.count * dishes[key]
+#                         else:
+#                             ingredients_of_order[ing.id_ingredient] = ing.id_ingredient * ing.count * dishes[key]
+#             for key in ingredients_of_order:
+#                 repository_service.decrease_storage(session, key, ingredients_of_order[key])
+            
+
+#             return Response(status_code=201)
+#         else:
+#             raise HTTPException(
+#                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+#                 detail="Can't add new Order data",
+#             )
 
 """ -------------------------- Dishes -------------------------- """
 

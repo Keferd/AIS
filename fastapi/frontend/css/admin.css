@@ -1,0 +1,98 @@
+/* ADMIN CONTENT */
+
+.admin__content {
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: stretch;
+    flex-wrap: wrap;
+}
+
+.admin__aside {
+    background-color: #cecece;
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px 20px;
+}
+
+.admin__article {
+    color: #0f0f0f;
+    margin-bottom: 15px;
+    font-size: 24px;
+}
+
+.admin__article:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.admin__main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: scroll;
+}
+
+.admin__placeholder {
+    color: #a7a7a7;
+    font-size: 48px;
+    padding: 20px;
+
+}
+
+/* ADMIN TABLE */
+
+.admin__tablefield {
+    height: 100%;
+    width: 100%;
+    padding: 0 20px;
+}
+
+.admin__table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.admin__table tbody {
+    background-color: #cecece;
+}
+
+.admin__table tbody:nth-child(2n){
+    background-color: #f0f0f0;
+}
+
+.admin__table td, .admin__table th {
+    padding: 5px;
+    border: none;
+    border-right: 1px solid #797979;
+}
+
+.admin__table td:last-child, .admin__table th:last-child {
+    border: none;
+}
+
+
+/* MEDIA */
+
+@media (max-width: 800px) {
+    .admin__placeholder {
+        font-size: 36px;
+    }
+}
+
+@media (max-width: 500px) {
+    .admin__content {
+        flex-direction: column;
+    }
+
+    .admin__aside, .admin__main {
+        width: 100%;
+    }
+
+    .admin__placeholder {
+        font-size: 16px;
+    }
+}

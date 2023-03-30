@@ -1,0 +1,17 @@
+.basket__back {
+    text-decoration: none;
+}
+
+.basket__return {
+    height: 60px;
+    width: 160px;
+    border-radius: 30px;
+    background-color: #f0f0f0;
+    font-size: 32px;
+    color: #0f0f0f;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+

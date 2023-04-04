@@ -3,6 +3,7 @@ from typing import Optional, Iterable
 from starlette.responses import RedirectResponse
 from application.models.dto import *
 from application.models.dao import oruz
+from application.models.dto.counting_dto import CountingDTO
 from application.models.dto.dishes_dto import DishesDTO, DishDTO
 from application.models.dto.ingredients_dto import *
 from application.models.dto.orders_dishes_dto import OrdersDishesDTO
@@ -164,9 +165,10 @@ async def post_order(order: OrdersDTO):
                 ingredients_for_dishes=repository_service.get_dish_ingredient_by_dish_id(session,key)
                 for ing in ingredients_for_dishes:
                      ingrt=repository_service.get_ingredient_by_id(session,ing.ingredient_id)
-                     if(ingrt.count<dishes[key]*(ing.amount)):
-                         repository_service.create_storage(session,count=2000,date=datetime.now(),ingredient_id=ingrt.id)
-                         repository_service.increace_ingredient_count_by_id(session,id=ingrt.id,count=2000)
+                     delivery_count=repository_service.get_counting_by_id(session,ingrt.id)
+                     if(ingrt.count-dishes[key]*(ing.amount)<delivery_count.delivery_count):
+                         repository_service.create_storage(session,count=delivery_count.delivery_count*3.4,date=datetime.now(),ingredient_id=ingrt.id)
+                         repository_service.increace_ingredient_count_by_id(session,id=ingrt.id,count=delivery_count.delivery_count*3.4)
                      repository_service.increace_ingredient_count_by_id(session, ing.ingredient_id, -dishes[key]*(ing.amount))
             return Response(status_code=201)
         else:
@@ -240,7 +242,51 @@ async def post_dish(dish: DishesDTO):
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Can't add new Ingredient data",
             )
+""" -------------------------- Countings -------------------------- """
+@router.post('/counting', status_code=201)
+async def post_counting(counting: CountingDTO):
+    """ Добавление ingredient """
+    with SessionLocal() as session:
+        if repository_service.create_counting(session,
+                                             ingredient_id = counting.ingredient_id,
+                                             delivery_count = counting.delivery_count):
+            return Response(status_code=201)
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Can't add new Ingredient data",
+            )
 
+@router.get('/counting', response_model=CountingDTO)
+async def get_counting_by_id(id: int):
+    """ Получение ingredient по id """
+    with SessionLocal() as session:
+        response = repository_service.get_counting_by_id(session, id)
+    if response is None:
+        return Response(status_code=204)
+    return CountingDTO(ingredient_id=response.ingredient_id,delivery_count=response.delivery_count)
+
+@router.get('/countings', response_model=List[CountingDTO])
+async def get_countings():
+    """ Получение ingredient по id """
+    with SessionLocal() as session:
+        response = repository_service.get_countings(session)
+        return response
+
+@router.put('/counting', status_code=202)
+async def put_counting(id: int,counting: CountingDTO):
+    """ Обновить Ingredients """
+    with SessionLocal() as session:
+        #ing=repository_service.get_counting_by_id(session,id)
+        if repository_service.change_counting_by_id(session,
+                                                     id = id,
+                                                     count = counting.delivery_count):
+            return Response(status_code=202)
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Can't update Weather data",
+            )
 """ -------------------------- Ingredients -------------------------- """
 
 @router.get('/ingredient', response_model=IngredientsDTO)

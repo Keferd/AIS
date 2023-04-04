@@ -1,15 +1,15 @@
-async function loadRo(url){
+async function loadCount(url){
     const response = await fetch(url);
-    const ROBOT = await response.json();
-    console.log(ROBOT);
+    const COUNTINGS = await response.json();
+    console.log(COUNTINGS);
 
     const response2 = await fetch('http://127.0.0.1:8000/api/ingredients');
     const INGREDIENTS = await response2.json();
     console.log(INGREDIENTS);
 
-let admin_robot_btn = document.querySelector("#admin__robot");
+    let admin_ingredients_btn = document.getElementById("admin__countings");
 
-admin_robot_btn.addEventListener("click", function (e) {
+admin_ingredients_btn.addEventListener("click", function (e) {
     document.querySelector("#admin__main").innerHTML = `
         <div class="admin__placeholder">
             <img src="img/loading.png" alt="loading..." class="loading-img">
@@ -47,16 +47,18 @@ admin_robot_btn.addEventListener("click", function (e) {
     
     table.innerHTML += `
         <tr>
-            <th>Привезти</th>
-            <th>Сколько</th>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Значение</th>
         </tr>
     `;
 
-    for (let id in ROBOT){
+    for (let id in COUNTINGS){
         table.innerHTML += `
             <tr>
-                <td> Привези: ` + INGREDIENTS[ROBOT[id]['id_ingredient']]['name'] + `</td>
-                <td>` + ROBOT[id]['count'] + `</td>
+                <td>` + COUNTINGS[id]['ingredient_id'] + `</td>
+                <td>` + INGREDIENTS[COUNTINGS[id]['ingredient_id']]['name'] + `</td>
+                <td>` + COUNTINGS[id]['delivery_count'] + `</td>
             </tr>
         `;
     }
@@ -64,5 +66,26 @@ admin_robot_btn.addEventListener("click", function (e) {
         
 });
 }
-let url3 = 'http://127.0.0.1:8000/api/storages';
-const ROBOTS =loadRo(url3);
+let url67 = 'http://127.0.0.1:8000/api/countings';
+const COUNTINGS =loadCount(url67);
+
+// fetch(url, {
+//     method: 'GET',
+//     headers: {
+//         'Accept': 'application/json',
+//     },
+// })
+//    .then(response => response.json())
+//    .then(response => console.log(JSON.stringify(response)));
+
+// let formdata = JSON.stringify({ id: id, name: name, count: count});
+// let response =  fetch(url,
+// {
+//     method: "GET",
+//     body: formdata,
+//     headers: {
+//         'Content-Type': 'application/json'
+//     }
+// })
+// let INGREDIENTS = response;
+

@@ -5,6 +5,7 @@ from application.models.dto import *
 import functools
 import traceback
 
+from application.models.dto.counting_dto import CountingDTO
 from application.models.dto.dishes_dto import DishDTO
 from application.models.dto.ingredients_dto import IngredientssDTO
 from application.models.dto.orders_dto import OrderDTO
@@ -144,6 +145,40 @@ def delete_dish_by_id(db: Session, id: int) -> bool:
         db.rollback()
         return False
     return True
+""" -------------------------- Countings -------------------------- """
+def get_counting_by_id(db: Session, id: int) -> Optional[Countings]:
+    result = db.query(Countings).filter_by(ingredient_id=id).first()
+    return result
+
+def get_countings(db: Session) -> Iterable[Countings]:
+    countings_data: List[CountingDTO]=[]
+    result = db.query(Countings).all()
+    for w in result:
+        countings_data.append(map_counting_data_to_dto(w))
+    return countings_data
+
+def map_counting_data_to_dto(counting_dao: Countings):
+    return CountingDTO(ingredient_id=counting_dao.ingredient_id,
+                       delivery_count=counting_dao.delivery_count)
+
+def create_counting(db: Session, ingredient_id,delivery_count ) -> bool:
+    counting = Countings(ingredient_id=ingredient_id,delivery_count=delivery_count)
+    return add_counting(db, counting)
+
+def add_counting(db: Session, counting: Countings) -> bool:
+    try:
+        db.add(counting)
+        db.commit()
+    except Exception as ex:
+        print(traceback.format_exc())
+        db.rollback()
+        return False
+    return True
+
+def change_counting_by_id(db: Session, id,count ) -> bool:
+    counting = get_counting_by_id(db,id)
+    counting.delivery_count=count
+    return add_ingredient(db, counting)
 
 """ -------------------------- Ingredients -------------------------- """
 #ПОЛУЧЕНИЕ ПО ID

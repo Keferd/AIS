@@ -26,6 +26,11 @@ class Ingredients(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(100), nullable=False)
     count = Column(Integer, default=0)
+
+class Countings(Base):
+    __tablename__ = 'countings'
+    ingredient_id = Column(Integer, primary_key=True)
+    delivery_count = Column(Integer, default=0)
     # ....
 class Dishes(Base):
     __tablename__ = "dishes"

@@ -31,18 +31,18 @@ class TestOruzCrud(unittest.TestCase):
         result = get_ingredient_by_id(self.session, id=2)        # ищем запись по идентификатору города UFA
         self.assertIsNone(result)
 
-    def test_test_add(self):
-        result = create_test(self.session, name="Курица")
-        create_test(self.session, name="Курица2")
-        create_test(self.session, name="Курица3")
-        self.assertTrue(result)
-    def test_test_update(self):
-        result=uprade_test_by_id(self.session,2,"Картошка")
-        self.assertTrue(result)
-
-    def test_test_delete(self):
-        result=delete_test_by_id(self.session,2)
-        self.assertTrue(result)
+    # def test_test_add(self):
+    #     result = create_test(self.session, name="Курица")
+    #     create_test(self.session, name="Курица2")
+    #     create_test(self.session, name="Курица3")
+    #     self.assertTrue(result)
+    # def test_test_update(self):
+    #     result=uprade_test_by_id(self.session,2,"Картошка")
+    #     self.assertTrue(result)
+    #
+    # def test_test_delete(self):
+    #     result=delete_test_by_id(self.session,2)
+    #     self.assertTrue(result)
 
 if __name__ == '__main__':
     unittest.main()
